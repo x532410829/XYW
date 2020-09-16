@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Panacea.unity.bean.User;
 import com.Panacea.unity.config.MQ.DirectRabbitConfig;
 import com.Panacea.unity.config.MQ.DirectReceiver;
 import com.Panacea.unity.config.MQ.FanoutRabbitConfig;
@@ -26,7 +27,10 @@ import com.Panacea.unity.util.BaseUtil;
 import com.Panacea.unity.util.Result;
 
 /**
- * RabbitMQ 消息订阅发布demo
+ * RabbitMQ 消息订阅发布demo，
+ * 首先pom文件导包，然后写配置文件，配置内容查看application.properties文件；
+ * 这里配置MQ的交换机有3种，每一种都单独配置一个配置类来和对应的队列绑定，配置和绑定成功后，可以在
+ * MQ的控制面板里面看到对应的交换机的队列的情况
  * @author 夜未
  * @since 2020年9月11日
  */

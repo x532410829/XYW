@@ -53,6 +53,13 @@ public class User implements Serializable{
 	public User() {
 		super();
 	}
+	public User(Long id,String name,String passWord) {
+		super();
+		this.id=id;
+		this.userName=name;
+		this.passWord=passWord;
+		this.createTime=new Date();
+	}
 	
 	/**
 	 * 辅助类转User类

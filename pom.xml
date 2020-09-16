@@ -81,11 +81,35 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 		
+		<!-- Redis -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        
+        <!-- fastJSON解析工具 -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.73</version>
+		</dependency>
+        <!--gson解析工具 -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		</dependency>
+        <!-- 七牛第三方储存 -->
+		<dependency>
+		 <groupId>com.qiniu</groupId>
+		  	<artifactId>qiniu-java-sdk</artifactId>
+		  	<version>7.2.29</version>
+		 </dependency>
+        
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
+<!--去掉只能在test包导入的限制	<scope>test</scope>  -->		
+				<exclusions>
 				<exclusion>
 					<groupId>org.junit.vintage</groupId>
 					<artifactId>junit-vintage-engine</artifactId>
