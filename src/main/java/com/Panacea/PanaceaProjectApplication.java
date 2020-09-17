@@ -9,23 +9,17 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * 万能药项目------Panacea
- * 目的：将所有用过技术，做成单个零件式的demo，以后可以复制修改部分地方即可使用，帮助快速开发建立项目
- * 		 尽量做到所有代码都带上详细的注释、功能介绍、引用的包、注意事项等
+ * 目的：将所有用过技术，做成单个零件式的demo，以后可以直接复制在修改部分地方即可使用，帮助快速开发
+ * 建立项目尽量做到所有代码都带上详细的注释、功能介绍、引用的包、注意事项等
  * 
  * @author 夜未
  * @since 2020年9月9日
  */
-@ServletComponentScan
+@ServletComponentScan//组件扫描
 @SpringBootApplication
-@EnableScheduling
-@MapperScan({"com.Panacea.unity.dao","com.Panacea.*.dao"})
+@EnableScheduling//定时器的注解
+@MapperScan({"com.Panacea.unity.dao","com.Panacea.*.dao"})//通用mapper扫描
 public class PanaceaProjectApplication {
-	
-	
-	
-	
-	
-	
 	
 	
 /**
@@ -62,7 +56,9 @@ public class PanaceaProjectApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(PanaceaProjectApplication.class, args);
-		System.out.println("=============启动完成==============");
+		System.out.println("==================================="
+						+  "=============启动完成=============="
+						+  "===================================");
 	}
 
 }
