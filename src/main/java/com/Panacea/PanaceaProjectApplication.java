@@ -3,6 +3,7 @@ package com.Panacea;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import tk.mybatis.spring.annotation.MapperScan;
@@ -18,6 +19,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @ServletComponentScan//组件扫描
 @SpringBootApplication
 @EnableScheduling//定时器的注解
+//@ComponentScan(basePackages= {"com.Panacea"})
 @MapperScan({"com.Panacea.unity.dao","com.Panacea.*.dao"})//通用mapper扫描
 public class PanaceaProjectApplication {
 	

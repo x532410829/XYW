@@ -22,6 +22,7 @@ import com.Panacea.unity.config.MyMapper;
 import com.Panacea.unity.service.IUserService;
 import com.Panacea.unity.util.BaseUtil;
 import com.Panacea.unity.util.Result;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import tk.mybatis.mapper.entity.Example;
@@ -52,7 +53,8 @@ public class MybatisDemo {
 	 /**
 	  * 注入service 调用service的方法
 	  * IService为通用service的方法，BaseService实现了这个接口类，自己的service类继承它就可以使用
-	  * 通用的service方法了
+	  * 通用的service方法了,！！！注意使用通用mapper时，定义了他的service后一定要去定义他的Mapper
+	  * 否则会报错误找不到Mapper,service和mapper要同时存在
 	  */
 	 @Autowired
 	 private IUserService userService;
@@ -68,12 +70,24 @@ public class MybatisDemo {
 	 @ResponseBody
 	 public Result addUser(@RequestBody User user) {
 		 user.setCreateTime(new Date());
-		 userService.saveSelective(user);
+	//	 完整的添加用户流程查看UserController的addUser方法；包括加密这些
+	//	 userService.saveSelective(user);
 		 return BaseUtil.reFruitBean("返回提示信息", Result.SUCCESS, null);
 	 }
 	 
+	 @RequestMapping("findAll")
+	 @ResponseBody
+	 public Result findAllUser(@RequestBody UserVo userVo) {
+			PageHelper.startPage(userVo.getPageNum(), userVo.getPageSize(), "create_time DESC");
+			List<User>list= userService.selectAll();
+			 //转成分页格式的信息再返回前端
+			PageInfo<User> info=new PageInfo<User>(list);
+			return BaseUtil.reFruitBean("返回提示信息成功", Result.SUCCESS, info);
+		}
+	 
 	 /**
 	  * 使用自定义的service方法，进行分页查询
+	  * 时间条件查询
 	  * @param userVo
 	  * @return
 	  */
@@ -92,6 +106,8 @@ public class MybatisDemo {
 	  * @param userVo
 	  * @return
 	  */
+	 @RequestMapping("findUserByEx")
+	 @ResponseBody
 	 public Result findUserByeExample(@RequestBody UserVo userVo) {
 
 		 User user=new User(userVo);
@@ -104,8 +120,7 @@ public class MybatisDemo {
 			.andCondition("create_time <=", userVo.getCreateTime())//时间条件查询
 			.andIn("id",ids)//条件查询在集合ids里面的id
 			.andEqualTo(user)//看方法注释
-			.andAllEqualTo(user)//看方法注释，其他还有一些条件查询就不一一列举出来了
-			;
+			.andAllEqualTo(user);//看方法注释，其他还有一些条件查询就不一一列举出来了
 			
 			//可以配合分页插件一起使用
 		 List<User>list= userService.selectByExample(example);

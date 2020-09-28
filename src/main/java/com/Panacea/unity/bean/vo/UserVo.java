@@ -31,6 +31,6 @@ public class UserVo extends PageInfoUtil implements Serializable{
 
 	//如果只是日期，没有时间，可以不加该注解，如果有时间就要加上，不然无法解析或数据库
 	//的时间可能会少8小时
-	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
 	private Date createTime;
 }

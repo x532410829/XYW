@@ -2,7 +2,12 @@ package com.Panacea.demo;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.Panacea.unity.bean.vo.WeixinVo;
 import com.Panacea.unity.util.WeChatUtil;
@@ -59,7 +64,41 @@ public class WechatDemo {
 		System.out.println(map);
 	}
 	
-
+//--------------微信支付相关-----------------
+	
+	/**
+	 * 统一下单接口
+	 * @param 
+	 */
+	public void WeChatPay() {
+		weChatUtil.addOrder("具体的订单和支付信息");
+	}
+	
+	/**
+	 * 微信退款
+	 * @throws Exception 
+	 */
+	public void refundWxpay() throws Exception {
+		weChatUtil.refundWxpay("订单号", 10, 1, "其他订单信息");
+	}
+	
+	/**
+	 * 接收微信的回调通知，支付、退款这些
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/wxPayResult")
+	@ResponseBody
+	public void wxPayResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		weChatUtil.wxPayResult(request,  response);
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 }

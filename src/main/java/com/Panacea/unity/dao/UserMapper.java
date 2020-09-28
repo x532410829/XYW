@@ -20,7 +20,7 @@ import com.Panacea.unity.config.MyMapper;
  */
 public interface UserMapper extends MyMapper<User> {
 
-	@Select("SELECT id,user_name userName,pass_word passWord, create_time createTime FROM t_user WHERE create_time <=#{createTime}")
+	@Select("SELECT id,user_name userName,nick_name nickName,pass_word passWord,salt,state, create_time createTime FROM t_user WHERE create_time <=#{createTime}")
 	List<User> selectByTime(@Param("createTime")Date createTime);
 
 	@Insert("INSERT INTO t_user(user_name,pass_word,create_time) VALUES(#{userName}, #{passWord}, #{createTime})")
@@ -31,6 +31,9 @@ public interface UserMapper extends MyMapper<User> {
 
 	@Delete("DELETE FROM t_user WHERE id =#{id}")
 	void deleteUser(@Param("id")Long id);
+	
+	@Select("SELECT id,user_name userName,nick_name nickName,pass_word passWord,salt,state, create_time createTime FROM t_user WHERE user_name =#{username}")
+	User selectByUserName(@Param("username")String username);
 	
 //	如果有枚举类型，需要转换成对应的字段
 //	@Select("SELECT * FROM users")

@@ -20,4 +20,6 @@ public interface IUserService extends IService<User> {
 	 */
 	List<User> selectByTime(UserVo userVo);
 
+	User findByUsername(String username);
+
 }
