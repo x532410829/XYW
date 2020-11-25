@@ -1,0 +1,68 @@
+配置文件分为：dev=开发环境	test=测试环境	online=线上环境
+每个环境的配置根据具体情况填写，比如redis、MQ、数据库等连接地址，每个环境都是不一样的。
+根据使用、打包的情况，在右键项目peoperties选择Maven再填写对应的开发环境(如:dev)的名称，即可切换环境
+
+如何实现多环境配置：
+1、创建你需要的多个环境的配置文件的文件夹，如这里的dev、test、online这3个文件夹；将配置文件放在对应
+   的文件夹中，修改好你的配置文件内容。
+   
+2、在pom文件中添加如下内容，右键项目peoperties选择Maven再填写对应的开发环境(如:dev)的名称就可以了：
+   注意以下内容的属性为你设置的配置文件夹的名字和路径，改成你设置的就行了
+	
+	<profiles>  
+        <profile>  
+            <!-- 开发环境 -->  
+            <id>dev</id>  
+            <properties>  
+                <env>dev</env>
+            </properties>  
+            <activation>  
+                <!-- 默认激活该profile节点-->
+                <activeByDefault>true</activeByDefault>  
+            </activation> 
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/dev</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>  
+        <profile>  
+            <!-- 线上环境 -->  
+            <id>online</id>  
+            <properties>  
+                <env>online</env>
+            </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/online</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>  
+        <!-- 测试环境 -->    
+         <profile>  
+            <id>test</id>  
+            <properties>  
+                <env>test</env>
+            </properties>  
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/test</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile> 
+    </profiles>

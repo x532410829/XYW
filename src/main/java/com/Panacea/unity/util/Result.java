@@ -2,11 +2,17 @@ package com.Panacea.unity.util;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 /**
  * 统一的返回前端数据的封装类
  * @author 夜未
  * @since 2020年9月10日
  */
+@ApiModel(description= "返回响应数据")//设置为swagger可识别的类
+@Data
 public class Result implements Serializable{
 
 	
@@ -52,38 +58,14 @@ public class Result implements Serializable{
 	/** 未知错误 **/
 	public static final int UNKOWN_ERROR = 80;
 	
-
+	@ApiModelProperty(value = "错误编号")
 	private int errorType;
+	
+	@ApiModelProperty(value = "错误信息")
 	private String errorMessage;
+	
+	@ApiModelProperty(value = "返回的数据")
 	private Object data;
 
-	public int getErrorType() {
-		return errorType;
-	}
-
-	public void setErrorType(int errorType) {
-		this.errorType = errorType;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-
-	@Override
-	public String toString() {
-		return "Result [errorType=" + errorType + ", errorMessage=" + errorMessage + ", data=" + data + "]";
-	}
 	
 }

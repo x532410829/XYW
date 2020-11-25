@@ -36,11 +36,15 @@ public class LogDemo {
 	 
 	 
 	 
-	 
-//	 @RequestMapping("num")
-//	 public int log(int num) {		 
-//		 return 10/num;
-//	 }
+	 /**
+	  * 测试用
+	  * @param num
+	  * @return
+	  */
+	 @RequestMapping("num")
+	 public int log(int num) {		 
+		 return 10/num;
+	 }
 	 
 	 
 }

@@ -82,10 +82,15 @@ System.out.println("ShiroConfiguration.shirFilter()");
 		filterChainDefinitionMap.put("/static/**", "anon");
 		filterChainDefinitionMap.put("/user/**", "anon");
 		filterChainDefinitionMap.put("/shiro/**", "anon");
+		//swagger2免拦截
+		filterChainDefinitionMap.put("/swagger-ui.html**", "anon");
+		filterChainDefinitionMap.put("/v2/api-docs", "anon");
+		filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+		filterChainDefinitionMap.put("/webjars/**", "anon");
 //		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
 //		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		
-		filterChainDefinitionMap.put("/**", "authc");
+//		filterChainDefinitionMap.put("/**", "authc");//全部不拦截就可以先屏蔽这个
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
 	}
