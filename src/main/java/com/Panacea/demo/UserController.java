@@ -66,8 +66,8 @@ public class UserController extends BaseController{
 	@ResponseBody
 	public Result addUser(@RequestBody User user) {
 		
-		User user0 = userService.findByUsername(user.getUserName());
-		if(user0!=null) {
+		boolean f = userService.checkUserName(user.getUserName());
+		if(f) {
 			return BaseUtil.reFruitBean("账号已存在", Result.PARAMETER_ERROR, null);
 		}
 		user.setCreateTime(new Date());

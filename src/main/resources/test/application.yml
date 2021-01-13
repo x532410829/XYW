@@ -4,7 +4,7 @@ server:
     context-path: /JOJO   #设置项目访问的根路径
   
 logback:
-   logdir: H:/logs  #日志的输出目录
+   logdir: G://logs  #日志的输出目录
    appname: PanaceaProject #日志的项目名称
    
 #是否开启swagger

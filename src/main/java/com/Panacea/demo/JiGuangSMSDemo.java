@@ -14,13 +14,18 @@ public class JiGuangSMSDemo {
 	/**
 	 * 去极光官网查看自己的密钥
 	 */
-    private static final String appkey = "换成自己的";
-    private static final String masterSecret = "换成自己的";
+    private static final String appkey ="" ;//"换成自己的";
+    private static final String masterSecret = "";//"换成自己的";
     
-
+public static void main(String[] args) {
+	
+	SendSMSResult result=sendTemplateSMS("13631149685", "123");
+	System.out.println(result);
+}
 	
 	/**  
-	 * 模板ID，就是编辑的短信内容模板对应的ID，模板需要去极光官网创建，审核通过后得到一个模板ID
+	 * 模板ID，就是编辑的短信内容模板对应的ID，模板需要去极光官网创建，模板需要是通知类型的才可以
+	 * 自定义code，审核通过后得到一个模板ID
 	 * 发送验证码
 	 * @param phone 手机号
 	 * @param code 验证码，用数字

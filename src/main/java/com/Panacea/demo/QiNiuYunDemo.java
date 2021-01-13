@@ -3,9 +3,12 @@ package com.Panacea.demo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.assertj.core.internal.InputStreams;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.GMSignatureSpi.sha256WithSM2;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Panacea.unity.util.MyPutRet;
 import com.Panacea.unity.util.QiNiuYunUtil;
@@ -66,8 +69,17 @@ public class QiNiuYunDemo {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+	/**
+	 * 前端上传图片或文件使用MultipartFile来接收
+	 * @param files
+	 * @throws IOException 
+	 */
+	 public void webUpload( MultipartFile[] files) throws IOException {
+		 for (MultipartFile multipartFile : files) {
+			 File.createTempFile("临时文件名字","文件后缀");
+		}
+	 }
 	
 	/**
 	 * 直接覆盖上传，好像和上面的区别不大（暂时没发现有什么问题）

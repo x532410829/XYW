@@ -1,11 +1,17 @@
 package com.Panacea.demo;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +38,39 @@ import com.Panacea.unity.util.Result;
  */
 @RestController
 @RequestMapping("mq")
-public class RabbitMQDemo {
+public class RabbitMQDemo implements  RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnCallback {
 
+	
+	//构造方法注入消息确认回调函数，确保消息的可靠性    
+    @Autowired
+    public RabbitMQDemo(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+        //这是是设置回调能收到发送到响应
+        rabbitTemplate.setConfirmCallback(this);
+        //如果设置备份队列则returnedMessage不起作用，这里不启用
+        rabbitTemplate.setMandatory(false);
+        rabbitTemplate.setReturnCallback(this);
+    }
+	
+	
+// 连接配置和RabbitTemplate，springboot默认设置好了，所以不需要我们配置，如果自己配置的话就单独写个配置
+// 类，把配置信息填写好就可以了。
+//	@Bean
+//	  public ConnectionFactory connectionFactory() {
+//	    CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host,port);
+//	    cachingConnectionFactory.setUsername(userName);
+//	    cachingConnectionFactory.setPassword(password);
+//	    cachingConnectionFactory.setVirtualHost("/");
+//	    cachingConnectionFactory.setPublisherConfirms(true);
+//	    return cachingConnectionFactory;
+//	  }
+//	  @Bean
+//	  public RabbitTemplate rabbitTemplate() {
+//	    RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+//	    return rabbitTemplate;
+//	  }
+	
+	
 	/**
 	 * 使用RabbitTemplate,这提供了消息的接收/发送等等方法
 	 */
@@ -162,5 +199,58 @@ public class RabbitMQDemo {
 		rabbitTemplate.convertAndSend("topicExchange", "topic.woman", womanMap);
 		return BaseUtil.reFruitBean("发送成功", Result.SUCCESS, null);
 	}
+	
+	
+	/**延时消息的实现，可以用在订单失效等定时器功能方面，前提是要确保消息的可靠性，消息、队列、交换机
+	 * 都必须做好持久化，配置文件设置消息确认等
+	 * CustomExchange 
+	 * @param queueName
+	 * @param msg
+	 */
+	@RequestMapping("/sendDelayMessage")
+	 public Result sendMsg() {
+		String queueName="MyDelayQueue";
+		String msg="这是个延时消息，啦啦啦！！！！！";
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    System.out.println("消息发送时间:"+sdf.format(new Date()));
+	    rabbitTemplate.convertAndSend("my_delay_exchange", queueName, msg, new MessagePostProcessor() {
+	      @Override
+	      public Message postProcessMessage(Message message) throws AmqpException {
+	    	  //注意在发送的时候，必须加上一个header: x-delay
+	        message.getMessageProperties().setHeader("x-delay",10000);//毫秒
+	        return message;
+	      }
+	    });
+		return BaseUtil.reFruitBean("发送成功", Result.SUCCESS, null);
+	 }
+
+	
+	
+	/**
+	 * 消息回调确认
+	 */
+	@Override
+	public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+		if(ack) {
+			System.out.println("消息发送成功");
+		}else {
+			System.out.println("消息发送失败:"+cause);
+		}
+	}
+	
+	 //消息发送到转换器的时候没有对列的时候触发,配置了备份对列该回调则不生效
+	@Override
+	public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+		System.out.println("消息丢失："+message);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

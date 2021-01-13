@@ -12,10 +12,10 @@ import java.util.Map;
 @Component
 @RabbitListener(queues = "fanout.A")
 public class FanoutReceiverA {
-	 @RabbitHandler
-	    public void process(Map testMessage) {
+	@RabbitHandler
+    public void process(Map testMessage) {
 	        System.out.println("扇形交换机的FanoutReceiverA消费者收到消息  : " +testMessage.toString());
-	    }
+	}
 	 
 
 }

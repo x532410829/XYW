@@ -91,6 +91,7 @@ System.out.println("ShiroConfiguration.shirFilter()");
 //		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		
 //		filterChainDefinitionMap.put("/**", "authc");//全部不拦截就可以先屏蔽这个
+		filterChainDefinitionMap.put("/**", "anon");//全部不拦截
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
 	}

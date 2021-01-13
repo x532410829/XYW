@@ -74,11 +74,16 @@ public class JWTFilter extends BasicHttpAuthenticationFilter{
 
 	    @Override
 	    protected boolean executeLogin(ServletRequest request, ServletResponse response) {
-//	        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+//	        使用JWT验证时，先获取请求带的token
+//	    	HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 //	        String token = httpServletRequest.getHeader(TOKEN);
 //	        JWTToken jwtToken = new JWTToken(token);
+	    	
 	        UsernamePasswordToken usertoken = (UsernamePasswordToken) getSession().getAttribute(request.getRemoteAddr());
 	        try {
+	        	//使用JWT时将token传递给shiroRealm
+//	            getSubject(request, response).login(jwtToken);
+	        	
 	            getSubject(request, response).login(usertoken);
 	            return true;
 	        } catch (Exception e) {
