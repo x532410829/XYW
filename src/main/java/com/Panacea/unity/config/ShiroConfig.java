@@ -1,16 +1,16 @@
 package com.Panacea.unity.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.List;
 
 import javax.servlet.Filter;
 
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.session.SessionListener;
-import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -20,7 +20,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+
 
 /**
  * Shiro配置类
@@ -96,14 +96,57 @@ System.out.println("ShiroConfiguration.shirFilter()");
 		return shiroFilterFactoryBean;
 	}
 
+	/**
+	 * 配置安全管理器，使用我们自己创建的身份验证器，添加所有的 realm
+	 * @return
+	 */
 	@Bean
 	public SecurityManager securityManager(){
 		DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
-		securityManager.setRealm(myShiroRealm());	
-//      securityManager.setCacheManager(getEhCacheManager());
-//      securityManager.setSessionManager(sessionManager());
+		
+//      securityManager.setCacheManager(cacheManager());
+      securityManager.setSessionManager(sessionManager());
+      // 设置验证器为自定义验证器(如果只有一个Realm的话就可以不用设置了)
+      securityManager.setAuthenticator(modularRealmAuthenticator());  
+      // 多个时，设置Realms，把自定义的所有Realm放进去
+      List<Realm> realms = new ArrayList<>(2);
+      realms.add(myShiroRealm());
+      realms.add(myPhoneShiroRealm());
+//	  只有一个Realm时设置	
+//    securityManager.setRealm(myShiroRealm());
+      securityManager.setRealms(realms);
 		return securityManager;
 	}
+	
+	/**
+	 * session的管理器
+	 * @return
+	 */
+	@Bean
+    public DefaultWebSessionManager sessionManager(){
+        DefaultWebSessionManager manager = new DefaultWebSessionManager();
+        manager.setSessionDAO(sessionDAO());
+        manager.setGlobalSessionTimeout(30*60*1000);//设置session过期时间（毫秒）
+        manager.setDeleteInvalidSessions(true);
+        manager.setSessionValidationSchedulerEnabled(true);
+        manager.setSessionValidationInterval(10800000);//设置会话验证间隔
+        return manager;
+    }
+	@Bean
+    public SessionDAO sessionDAO(){
+        return new MemorySessionDAO();
+    }
+
+	/**加了会有冲突，暂时没解决
+	 * shiro缓存管理器（配置文件Ehcache.xml）
+	 * @return
+	 */
+//    @Bean(name = "cacheManager")
+//    public EhCacheManager cacheManager() {
+//        EhCacheManager cacheManager = new EhCacheManager();
+//        cacheManager.setCacheManagerConfigFile("classpath:Ehcache.xml");
+//        return cacheManager;
+//    }
 	
 	/**
 	 * 管理bean生命周期
@@ -114,33 +157,40 @@ System.out.println("ShiroConfiguration.shirFilter()");
         return new LifecycleBeanPostProcessor();
     }
 	
-//	@Bean
-//	public EhCacheManager getEhCacheManager() {
-//	    EhCacheManager em = new EhCacheManager();
-//	    em.setCacheManagerConfigFile("classpath:config/Ehcache.xml");
-//	    return em;
-//	}
-//	@Bean
-//	public SessionManager sessionManager() {
-//		DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-//		//设置session监听器
-//		Collection<SessionListener> listeners = new ArrayList<SessionListener>();
-//		listeners.add(new ShiroSessionListener());
-//		sessionManager.setSessionListeners(listeners);
-//		sessionManager.setGlobalSessionTimeout(60 * 60 * 1000);//30分钟
-//		//设置普通的sessiondao
-//		//sessionManager.setSessionDAO(sessionDAO());
-//		return sessionManager;
-//	}
 	
 	/**
-	 * 配置自己的 Realm
+     * 针对多Realm，使用自定义身份验证器，告诉 Shiro，以后使用我们自定义的身份验证器；
+     * 注意，只对登录认证去区分Realm,权限认证不会区分，多个Realm实现了权限认证的话，全部都会去执行
+     * 这里非常容易出错，所以正常只需要在一个Realm里面去实现权限认证，而且要确保权限认证时使用的信息
+     * 如用户名:userName 在全部Realm登录认证后都能放到authenticationInfo里面，确保能在权限认证时从
+     * principals.getPrimaryPrincipal() 这都能拿到userName去做权限校验
+     * @return
+     */
+    @Bean
+    public ModularRealmAuthenticator modularRealmAuthenticator(){
+        CustomModularRealmAuthenticator authenticator = new CustomModularRealmAuthenticator();
+        authenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        return authenticator;
+    }
+	
+	/**
+	 * 配置自己自定义的Realm(账号密码登录的)
 	 * @return
 	 */
 	@Bean
 	public MyShiroRealm myShiroRealm(){
 		MyShiroRealm myShiroRealm = new MyShiroRealm();
 		return myShiroRealm;
+	}
+	
+	/**
+	 * 配置自己自定义的Realm(手机号登录的)
+	 * @return
+	 */
+	@Bean
+	public MyPhoneShiroRealm myPhoneShiroRealm(){
+		MyPhoneShiroRealm myPhoneShiroRealm = new MyPhoneShiroRealm();
+		return myPhoneShiroRealm;
 	}
 	
 	

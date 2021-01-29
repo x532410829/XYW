@@ -12,9 +12,11 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.Panacea.unity.config.WebSocketConfig;
+import com.Panacea.unity.service.IUserService;
 
 /**WebSocket的实现有几种方式，该项目列举2种主要的，下面是其中一个，日常的简单使用就用这个，
  * 还有另外一种加入JWT认证的，见示例： WebSocketDemoTwo 
@@ -23,6 +25,7 @@ import com.Panacea.unity.config.WebSocketConfig;
  * @since 2020年12月18日
  */
 //连接地址记得带端口和项目名如：ws://192.168.1.101:8088/JOJO/websocket/123
+//注意别被shiro拦截了
 @ServerEndpoint(value ="/websocket/{sid}")
 @Component
 public class WebSocketDemo {
@@ -32,7 +35,12 @@ public class WebSocketDemo {
 	 */
 	WebSocketConfig webSocketConfig;
 	
-	
+	//注意WebSocketDemoTwo中不可以直接使用@Autowired注入属性，会为空；应该使用以下方法注入
+	static IUserService userService;
+	@Autowired
+	public void setUserService(IUserService userService1) {
+		WebSocketDemoTwo.userService=userService1;
+	}
 	
 	
 

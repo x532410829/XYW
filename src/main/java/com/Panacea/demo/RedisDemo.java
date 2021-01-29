@@ -20,6 +20,7 @@ import com.Panacea.unity.service.impl.UserServiceImpl;
 import com.Panacea.unity.util.BaseUtil;
 import com.Panacea.unity.util.RedisUtil;
 import com.Panacea.unity.util.Result;
+import com.alibaba.fastjson.JSONObject;
 @RestController
 @RequestMapping("redis")
 public class RedisDemo {
@@ -68,6 +69,39 @@ public class RedisDemo {
 		redisUtil.lSet(key, list.toString());
 		return BaseUtil.reFruitBean("成功", Result.SUCCESS, null);
 	}
+	
+	@SuppressWarnings("unused")
+	@RequestMapping("putList1")
+	@ResponseBody
+	public Result putList1(String key) {
+		List<User>list=userServiceImpl.selectAll();
+		List<Object>list0=new ArrayList<Object>();
+		for (User user : list) {
+			list0.add(JSONObject.toJSONString(user));
+		}
+//		boolean a= redisUtil.lSet(key, list.toString());
+//		boolean b= redisUtil.lSet(key+"-1", list);
+		boolean c= redisUtil.lSetList(key+"-2", list0);
+		
+//		List<Object> list2=redisUtil.lGet(key, 0, 1);
+//		List<Object> list3=redisUtil.lGet(key+"-1", 0, -1);
+		List<Object> list4=redisUtil.lGet(key+"-2", 0, 1);
+		
+		return BaseUtil.reFruitBean("成功", Result.SUCCESS, list4);
+	}
+	
+	@RequestMapping("deleteList")
+	@ResponseBody
+	public Result deleteList(String key,String value) {
+		
+		Long num= redisUtil.lRemove(key, 1, value);
+		return BaseUtil.reFruitBean("成功", Result.SUCCESS, num);
+
+	}
+	
+	
+	
+	
 	
 	
 

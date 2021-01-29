@@ -38,6 +38,13 @@ public interface IUserService extends IService<User> {
 	 * @return
 	 */
 	User findByUsername(String username);
+	
+	/**
+	 * 根据手机号查询用户
+	 * @param phone
+	 * @return
+	 */
+	User findByPhone(String phone);
 
 	/**
 	 * 检测用户名是否存在

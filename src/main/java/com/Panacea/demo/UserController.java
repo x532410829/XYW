@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
@@ -22,6 +23,7 @@ import com.Panacea.demo.base.BaseController;
 import com.Panacea.unity.bean.Role;
 import com.Panacea.unity.bean.User;
 import com.Panacea.unity.bean.User_Role;
+import com.Panacea.unity.config.ShiroPhoneToken;
 import com.Panacea.unity.service.IRoleService;
 import com.Panacea.unity.service.IUserService;
 import com.Panacea.unity.service.IUser_RoleService;
@@ -83,7 +85,7 @@ public class UserController extends BaseController{
 	}
 	
 	/**
-	 * 登录
+	 * 账号密码登录
 	 * @param user
 	 * @return
 	 */
@@ -106,7 +108,8 @@ public class UserController extends BaseController{
 		}
 		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassWord());
 		try {
-			// 进行验证，这里可以捕获异常，然后返回对应信息
+			/** 使用UsernamePasswordToken进行验证的话，调用的是MyShiroRealm去验证，这里可以捕获异常，
+			 * 然后返回对应信息*/
 			subject.login(usernamePasswordToken);
 
 			getSession().setAttribute("user", user1);
@@ -123,13 +126,37 @@ public class UserController extends BaseController{
 			
 		} catch (UnknownAccountException e) {
 			return BaseUtil.reFruitBean("用户名不存在！", Result.PARAMETER_ERROR, null);
-		} catch (AuthenticationException e) {
+		} catch (LockedAccountException e) {
+			e.printStackTrace();
+			return BaseUtil.reFruitBean("账号锁定", Result.PARAMETER_ERROR, null);
+		}catch (AuthenticationException e) {
 			return BaseUtil.reFruitBean("账号或密码错误！", Result.PARAMETER_ERROR, null);
 		} catch (AuthorizationException e) {
 			return BaseUtil.reFruitBean("没有权限", Result.PARAMETER_ERROR, null);
 		}
 		return BaseUtil.reFruitBean("登录成功", Result.SUCCESS, null);
 	}
+	
+	/**
+	 * 手机号登录
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/loginByPhone")
+	@ResponseBody
+	public Result loginByPhone(@RequestBody User user) {
+		//手机验证码登录，这里不写详细的登录逻辑了，具体的按情况实现
+		//1、验证手机号和验证码是否正确，正确就下一步
+		//2、调用Shiro登录
+		Subject subject = SecurityUtils.getSubject();
+		//构造一个手机号登录的Token,这个自定义参数，看情况实现
+		ShiroPhoneToken token=new ShiroPhoneToken(user.getPhone());
+		subject.login(token);
+		//登录完成，这里登录和账号密码登录就一样的了，tyr catch异常就知道有没有登录成功了
+		
+		return BaseUtil.reFruitBean("登录成功", Result.SUCCESS, null);
+	}
+	
 	
 	/**
 	 * 退出登录

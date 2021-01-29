@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Panacea.demo.base.BaseController;
 import com.Panacea.unity.bean.User;
+import com.Panacea.unity.config.CustomModularRealmAuthenticator;
 import com.Panacea.unity.config.GlobalExceptionHandler;
+import com.Panacea.unity.config.MyPhoneShiroRealm;
 import com.Panacea.unity.config.MyShiroRealm;
 import com.Panacea.unity.config.ShiroConfig;
+import com.Panacea.unity.config.ShiroPhoneToken;
 import com.Panacea.unity.config.ShiroUserFilter;
 import com.Panacea.unity.service.IUserService;
 import com.Panacea.unity.util.BaseUtil;
@@ -26,11 +29,15 @@ import com.Panacea.unity.util.Result;
  * @since 2020年9月17日
  */
 @RequestMapping("shiro")//这个路径在shiro的拦截器中放开了
-@RestController//定义一个controller
+@RestController
 @SuppressWarnings("all")//忽略警告信息
 public class ShiroDemo extends BaseController{
+	
+	//pom文件添加shiro的依赖和 aop的依赖（没有AOP依赖会导致权限注解失效，无法鉴权）
+	//添加shiro 缓存配置文件 EHcache.xml
+	
 
-	//用户的shiro登录这些在UserControlle
+	//用户的shiro登录,这些在UserControlle里面，含多个登录方式
 	private UserController userController;
 	
 	//全局异常处理，这里需要处理shiro拦截的无权限的时候抛出来的异常统一处理
@@ -39,10 +46,36 @@ public class ShiroDemo extends BaseController{
 	@Autowired
 	private IUserService userService;
 	
+	
 	/**
-	 * 用户自定义的配置文件，具体的看内容
+	 * 关于Realm，是用于shiro登录和权限验证的处理类，当多个不同的登录接口时，就需要多个Realm,
+	 * 比如正常的账号密码登录，就可以使用默认的MyShiroRealm实现登录和权限验证（因为有账号密码可以用）
+	 * 如果是手机验证码或其它第三方登录，由于没有账号密码，可能只有个openId，所以就需要自定义自己
+	 * 的Realm去实现登录验证，（这里demo使用MyPhoneShiroRealm 手机验证）；当使用多个
+	 */
+	
+	/**
+	 * 当多个Realm时需要创建这个验证器去管理，只有一个时不需要，而且ShiroConfig里面需要在securityManager
+	 * 安全管理器里面设置使用验证器为自定义的这个验证器，再把所有的Realm设置进安全管理器去
+	 */
+	CustomModularRealmAuthenticator cus;
+	
+	/**
+	 * 用户自定义的账号密码登录验证的配置文件，具体的看内容，该Realm对应使用的token类型为默认的类型
+	 * UsernamePasswordToken来进行登录验证（看账号密码登录接口里的subject.login(usernamePasswordToken)）
+	 * 每个Realm都会处理对应的Token来进行登录验证鉴权等；这个token可以自定义，看MyPhoneShiroRealm
 	 */
 	private MyShiroRealm m;
+	
+	/**
+	 * 用户自定义的手机号登录验证的配置文件，这个Realm是专门处理手机号登录的，不需要密码，与其对应的
+	 * Token是ShiroPhoneToken,token的具体属性可以按情况自定义，如第一第三方用户信息、openId等用于登录
+	 * 和验证，具体实现方式看ShiroPhoneToken
+	 */
+	private MyPhoneShiroRealm phoneShiroRealm;
+	/** MyPhoneShiroRealm对应的Token */
+	private ShiroPhoneToken token;
+	
 	
 	/**
 	 * shiro的配置文件，具体的看内容

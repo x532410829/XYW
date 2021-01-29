@@ -38,7 +38,7 @@ public class MinIODemo {
 	
 	
 	/**
-	 * 首先添加pom文件的依赖，只需要一个配置类和添加配置属性到 application.yml
+	 * 首先添加pom文件的依赖，只需要一个配置类和添加配置属性到 application.yml(也可以不加，放到配置类里面)
 	 * Minio 配置文件
 	 */
 	private static volatile MinioConfig minioConfig;

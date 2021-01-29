@@ -1,16 +1,11 @@
 package com.Panacea.demo.base;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 import com.Panacea.unity.bean.User;
-import com.Panacea.unity.util.BaseUtil;
 
 /**
  * 

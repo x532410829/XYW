@@ -424,7 +424,6 @@ public class RedisUtil {
      * 将list放入缓存
      * @param key 键
      * @param value 值
-     * @param time 时间(秒)
      * @return
      */
     public boolean lSet(String key, Object value) {
@@ -459,11 +458,10 @@ public class RedisUtil {
     /**
      * 将list放入缓存
      * @param key 键
-     * @param value 值
-     * @param time 时间(秒)
+     * @param value 值 List<Object>中Object值需要转为JSON字符串
      * @return
      */
-    public boolean lSet(String key, List<Object> value) {
+    public boolean lSetList(String key, List<Object> value) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
@@ -481,7 +479,7 @@ public class RedisUtil {
      * @param time 时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value, long time) {
+    public boolean lSetList(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0)

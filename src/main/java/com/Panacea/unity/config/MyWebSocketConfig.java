@@ -31,7 +31,8 @@ public class MyWebSocketConfig implements WebSocketConfigurer   {
 
 	  @Override
 	    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-	       registry.addHandler(new WebSocketDemoTwo(), "/ws/demo/{token}")//设置连接路径和处理器
+		//设置连接路径和处理器，注意别被shiro拦截了
+	       registry.addHandler(new WebSocketDemoTwo(), "/ws/demo/{token}")
 	                .setAllowedOrigins("*")//设置跨域请求
 	                .addInterceptors(new MyWebSocketInterceptor());//设置自定义的拦截器
 	    }

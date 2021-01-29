@@ -41,6 +41,8 @@ public class User implements Serializable{
 	
 	private String nickName;//昵称
 	
+	private String phone;//手机号
+	
 	@Column(name = "pass_word")
 	private String passWord;
 	

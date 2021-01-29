@@ -106,6 +106,9 @@ public class UserServiceImpl extends BaseService<User> implements IUserService{
 	@Override
 	public User findByUsername(String username) {
 		User user= userMapper.selectByUserName(username);
+		if(user==null) {
+			return null;
+		}
 		List<User_Role>URlist=user_RoleServiceImpl.selectByUserId(user.getId());
 		List<Role> roles=new ArrayList<Role>();
 		for (User_Role user_Role : URlist) {
@@ -261,6 +264,36 @@ public class UserServiceImpl extends BaseService<User> implements IUserService{
 	@Override
 	public void transactionalTest5(User record) {
 		
+	}
+
+	@Override
+	public User findByPhone(String phone) {
+
+		User user= userMapper.selectByPhone(phone);
+		if(user==null) {
+			return null;
+		}
+		List<User_Role>URlist=user_RoleServiceImpl.selectByUserId(user.getId());
+		List<Role> roles=new ArrayList<Role>();
+		for (User_Role user_Role : URlist) {
+			Role role=roleServiceImpl.selectByKey(user_Role.getRoleId());
+			if(role!=null) {
+				//获取角色对应的所有权限
+				List<Role_Permission>RPList=role_PermissionServiceImpl.selectByRoleId(role.getId());
+				List<Permission>permissions=new ArrayList<Permission>();
+				for (Role_Permission rp : RPList) {
+					Permission p=permissionServiceImpl.selectByKey(rp.getPermissionId());
+					if(p!=null) {
+						permissions.add(p);
+					}
+				}
+				role.setPermissions(permissions);
+				roles.add(role);
+			}
+		}
+		user.setRoleList(roles);
+		return user;
+	
 	}
 	
 	

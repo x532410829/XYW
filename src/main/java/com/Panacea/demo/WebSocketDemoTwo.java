@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -11,12 +13,14 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.Panacea.unity.config.MyWebSocketConfig;
+import com.Panacea.unity.service.IUserService;
 
 /** 加入socket连接时握手请求的JWT认证的websocket连接，必须认证通过才可以连接socket
  * WebSocket 示例2；
  * @author 夜未
  * @since 2020年12月28日
  */
+@Component
 public class WebSocketDemoTwo implements WebSocketHandler{
 
 	
@@ -25,6 +29,13 @@ public class WebSocketDemoTwo implements WebSocketHandler{
 	 */
 	MyWebSocketConfig myWebSocketConfig;
 	
+	
+	//注意WebSocketDemoTwo中不可以直接使用@Autowired注入属性，会为空；应该使用以下方法注入
+	static IUserService userService;
+	@Autowired
+	public void setUserService(IUserService userService1) {
+		WebSocketDemoTwo.userService=userService1;
+	}
 	
 	/**
 	 * 保存连接信息的Map
