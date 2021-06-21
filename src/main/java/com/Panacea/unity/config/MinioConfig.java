@@ -19,7 +19,7 @@ public class MinioConfig {
 	//下面静态变量配置需要用到的属性
 	
 	/** minio服务的访问路径和端口*/
-	public static final String root_endpoint= "http://127.0.0.1:8009";
+	public static final String root_endpoint= "http://127.0.0.1:9009";
 	//账号密码（可以改成密钥，安全性比较高，修改在minio的配置文件config.json里面修改）
 	public static final String root_accessKey= "minioadmin";
 	public static final String root_secretKey= "minioadmin";

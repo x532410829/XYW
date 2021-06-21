@@ -171,6 +171,9 @@ public class UserController extends BaseController{
 		return BaseUtil.reFruitBean("退出登录成功", Result.SUCCESS, null);
 	}
 	
+
+	
+	
 	
 
 }

@@ -12,7 +12,6 @@ import com.Panacea.unity.service.IPermissionService;
  */
 @Service
 public class PermissionServiceImpl extends BaseService<Permission> implements IPermissionService{
-
-	
+		
 	
 }

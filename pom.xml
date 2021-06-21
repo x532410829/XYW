@@ -234,6 +234,13 @@
 		    <artifactId>minio</artifactId>
 		    <version>8.0.0</version>
 		</dependency>
+		
+		<!-- netty框架 -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+		</dependency>
+		
 				
 	</dependencies>
 
