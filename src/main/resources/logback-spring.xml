@@ -66,19 +66,19 @@
 			<charset>UTF-8</charset>
 			<pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36}-%msg%n</pattern>
 		</encoder>
-		<!-- 可以设置在日滚动文件中，强制只保存错误ERROR级别以上信息 -->
-<!--         <filter class="ch.qos.logback.classic.filter.LevelFilter">
+		<!-- 可以设置在滚动文件中，强制只保存错误ERROR级别以上信息，动态修改日志级别时关闭 -->
+<!--          <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
-        </filter> -->
+        </filter>  -->
         
 	</appender>
 	
 	
 	
-	<logger name="com.Panacea" level="info" />
-
+<!-- 	<logger name="com.Panacea" level="info" /><!-- 动态修改日志级别时关闭 -->
+ -->
 <!-- 定义日志全局最低输出级别是INFO，同时向控制台和日滚动文件输出 -->
 	<root level="INFO">
 		<appender-ref ref="console" />
